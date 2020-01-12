@@ -1,0 +1,9 @@
+version: '3'
+services:
+  slackube:
+    container_name: slackube
+    build: ./
+    environment:
+      - APP_ENV=dev
+    volumes:
+      - ./:/go
