@@ -3,10 +3,11 @@ FROM golang:1.13-alpine as build
 ARG APP_ENV
 ENV APP_ENV production
 
-WORKDIR /go
-COPY app.go .
+WORKDIR /go/src/slackube
+COPY app.go /go/src/slackube/
 
-RUN apk add git && go build -o slackube
+RUN apk add git
+RUN go get ./... && go build -o slackube
 
 CMD if [ ${APP_ENV} != production ]; \
 	then \
@@ -15,5 +16,5 @@ CMD if [ ${APP_ENV} != production ]; \
 	fi
 
 FROM golang:1.13-alpine 
-COPY --from=build /go/slackube /usr/local/bin/
+COPY --from=build /go/src/slackube/slackube /usr/local/bin/
 CMD ["slackube"]
