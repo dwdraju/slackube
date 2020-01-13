@@ -4,17 +4,12 @@ ARG APP_ENV
 ENV APP_ENV production
 
 WORKDIR /go/src/slackube
-COPY app.go /go/src/slackube/
+COPY . /go/src/slackube/
 
-RUN apk add git
+RUN apk add --no-cache git
 RUN go get ./... && go build -o slackube
 
-CMD if [ ${APP_ENV} != production ]; \
-	then \
-	go get github.com/pilu/fresh && \
-	fresh; \
-	fi
-
-FROM golang:1.13-alpine 
-COPY --from=build /go/src/slackube/slackube /usr/local/bin/
+# Run stage
+FROM alpine:3.11
+COPY --from=build /go/bin/slackube /usr/local/bin/
 CMD ["slackube"]
